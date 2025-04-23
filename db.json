@@ -1,0 +1,205 @@
+{
+  "teamPokemons": [
+    {
+      "id": "team_1745312283458",
+      "pokemonId": 2,
+      "name": "ivysaur",
+      "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png",
+      "backImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/2.png",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "stats": {
+        "hp": 60,
+        "attack": 62,
+        "defense": 63,
+        "speed": 60
+      },
+      "height": 1,
+      "weight": 13,
+      "abilities": [
+        "overgrow",
+        "chlorophyll"
+      ],
+      "animatedSprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/2.gif"
+    },
+    {
+      "id": "team_1745312298338",
+      "pokemonId": 1,
+      "name": "bulbasaur",
+      "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+      "backImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/1.png",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "stats": {
+        "hp": 45,
+        "attack": 49,
+        "defense": 49,
+        "speed": 45
+      },
+      "height": 0.7,
+      "weight": 6.9,
+      "abilities": [
+        "overgrow",
+        "chlorophyll"
+      ],
+      "animatedSprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/1.gif"
+    },
+    {
+      "id": "team_1745312300738",
+      "pokemonId": 3,
+      "name": "venusaur",
+      "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png",
+      "backImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/3.png",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "stats": {
+        "hp": 80,
+        "attack": 82,
+        "defense": 83,
+        "speed": 80
+      },
+      "height": 2,
+      "weight": 100,
+      "abilities": [
+        "overgrow",
+        "chlorophyll"
+      ],
+      "animatedSprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/3.gif"
+    },
+    {
+      "id": "team_1745312304490",
+      "pokemonId": 4,
+      "name": "charmander",
+      "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
+      "backImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/4.png",
+      "types": [
+        "fire"
+      ],
+      "stats": {
+        "hp": 39,
+        "attack": 52,
+        "defense": 43,
+        "speed": 65
+      },
+      "height": 0.6,
+      "weight": 8.5,
+      "abilities": [
+        "blaze",
+        "solar-power"
+      ],
+      "animatedSprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/4.gif"
+    },
+    {
+      "id": "team_1745312306161",
+      "pokemonId": 5,
+      "name": "charmeleon",
+      "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/5.png",
+      "backImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/5.png",
+      "types": [
+        "fire"
+      ],
+      "stats": {
+        "hp": 58,
+        "attack": 64,
+        "defense": 58,
+        "speed": 80
+      },
+      "height": 1.1,
+      "weight": 19,
+      "abilities": [
+        "blaze",
+        "solar-power"
+      ],
+      "animatedSprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/5.gif"
+    },
+    {
+      "id": "team_1745322461016",
+      "pokemonId": 6,
+      "name": "charizard",
+      "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+      "backImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/6.png",
+      "types": [
+        "fire",
+        "flying"
+      ],
+      "stats": {
+        "hp": 78,
+        "attack": 84,
+        "defense": 78,
+        "speed": 100
+      },
+      "height": 1.7,
+      "weight": 90.5,
+      "abilities": [
+        "blaze",
+        "solar-power"
+      ],
+      "animatedSprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/6.gif"
+    }
+  ],
+  "battleHistory": [
+    {
+      "id": "1745329916295",
+      "heroId": 2,
+      "opponentId": 9,
+      "heroName": "ivysaur",
+      "opponentName": "blastoise",
+      "heroImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png",
+      "opponentImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png",
+      "heroTypes": [
+        "grass",
+        "poison"
+      ],
+      "opponentTypes": [
+        "water"
+      ],
+      "winner": "opponent",
+      "result": "lose",
+      "date": "2025-04-22T13:51:56.295Z"
+    },
+    {
+      "id": "1745330227678",
+      "heroId": 2,
+      "opponentId": 4,
+      "heroName": "ivysaur",
+      "opponentName": "charmander",
+      "heroImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png",
+      "opponentImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
+      "heroTypes": [
+        "grass",
+        "poison"
+      ],
+      "opponentTypes": [
+        "fire"
+      ],
+      "winner": "hero",
+      "result": "win",
+      "date": "2025-04-22T13:57:07.678Z"
+    },
+    {
+      "id": 1745407590087,
+      "heroId": 6,
+      "opponentId": 5,
+      "heroName": "charizard",
+      "opponentName": "charmeleon",
+      "heroImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+      "opponentImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/5.png",
+      "heroTypes": [
+        "fire",
+        "flying"
+      ],
+      "opponentTypes": [
+        "fire"
+      ],
+      "winner": "hero",
+      "result": "win",
+      "date": "2025-04-23T11:26:30.087Z"
+    }
+  ]
+}

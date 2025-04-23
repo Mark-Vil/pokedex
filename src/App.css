@@ -1,0 +1,56 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-top: 1rem;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+
+.navbar-wrapper {
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  padding-top: 16px;
+  background-color: transparent;
+}
+
+.navbar-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+  padding: 0 1rem; 
+}
+
+
+.navbar-floating {
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.navbar-floating:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0A1B38 !important;
+}
+
+.battle-scrollbar::-webkit-scrollbar {
+  height: 10px;
+}
+.battle-scrollbar::-webkit-scrollbar-thumb {
+  background: #AFC1CB;
+  border-radius: 8px;
+}
+.battle-scrollbar::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+.battle-scrollbar {
+  scrollbar-color: #AFC1CB #f3f4f6;
+  scrollbar-width: thin;
+}

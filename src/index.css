@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  background-color: #F6F8FC;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+}
+
+
+
+.nav-link:hover svg {
+  fill: #FF5350 !important;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Background image as a subtle watermark */
+  background-image: url('./assets/icons/pokemon_icon.png');
+  background-repeat: no-repeat;
+  background-size: 550px auto;
+  background-attachment: fixed;
+  background-position: top -80px left -100px;
+  background-blend-mode: lighten;
+  position: relative;
+  /* display: flex; */
+  /* place-items: center; */
+}
+
+/* Overlay for a pale effect */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(246, 248, 252, 0.92); 
+  pointer-events: none; 
+  z-index: 0;
+}
+#root {
+  position: relative;
+  z-index: 1; /* Make sure all content is above the overlay */
+}
