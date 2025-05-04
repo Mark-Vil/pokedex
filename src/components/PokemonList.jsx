@@ -90,7 +90,7 @@ const PokemonList = () => {
       clearTimeout(searchTimeout);
     }
 
-    // Set a small delay before searching to avoid too many API calls while typing
+   
     const timeout = setTimeout(() => {
       fetchPokemon();
     }, 500);

@@ -117,30 +117,6 @@
         "solar-power"
       ],
       "animatedSprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/5.gif"
-    },
-    {
-      "id": "team_1745322461016",
-      "pokemonId": 6,
-      "name": "charizard",
-      "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
-      "backImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/6.png",
-      "types": [
-        "fire",
-        "flying"
-      ],
-      "stats": {
-        "hp": 78,
-        "attack": 84,
-        "defense": 78,
-        "speed": 100
-      },
-      "height": 1.7,
-      "weight": 90.5,
-      "abilities": [
-        "blaze",
-        "solar-power"
-      ],
-      "animatedSprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/6.gif"
     }
   ],
   "battleHistory": [
@@ -183,7 +159,7 @@
       "date": "2025-04-22T13:57:07.678Z"
     },
     {
-      "id": 1745407590087,
+      "id": "1745407590087",
       "heroId": 6,
       "opponentId": 5,
       "heroName": "charizard",
@@ -200,6 +176,26 @@
       "winner": "hero",
       "result": "win",
       "date": "2025-04-23T11:26:30.087Z"
+    },
+    {
+      "id": 1746364862276,
+      "heroId": 2,
+      "opponentId": 257,
+      "heroName": "ivysaur",
+      "opponentName": "blaziken",
+      "heroImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png",
+      "opponentImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/257.png",
+      "heroTypes": [
+        "grass",
+        "poison"
+      ],
+      "opponentTypes": [
+        "fire",
+        "fighting"
+      ],
+      "winner": "opponent",
+      "result": "lose",
+      "date": "2025-05-04T13:21:02.276Z"
     }
   ]
 }
