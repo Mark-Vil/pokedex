@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+const API_URL = 'https://poke-api-ytta.onrender.com';
 const typeColors = {
   grass: "#78C850",
   poison: "#A040A0",
@@ -45,7 +46,7 @@ export default function BattleHistory() {
   const [visible, setVisible] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/battleHistory")
+    fetch(`${API_URL}/battleHistory`)
       .then(res => res.json())
       .then(data => {
         const reversed = data.reverse();

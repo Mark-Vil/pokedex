@@ -6,6 +6,7 @@ import PokemonDetail from "./PokemonDetail";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
+const API_URL = 'https://poke-api-ytta.onrender.com';
 const placeholderImg =
   "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png";
 const TABS = { TEAM: "Team", GLOBAL: "Global" };
@@ -31,7 +32,7 @@ const PokemonBattle = () => {
   useEffect(() => {
     // 1. Fetch team data
     axios
-      .get("http://localhost:3001/teamPokemons")
+    .get(`${API_URL}/teamPokemons`)
       .then((res) => setTeam(res.data));
 
     // 2. Fetch ALL Pokémon (no limit)
@@ -177,7 +178,7 @@ const PokemonBattle = () => {
         date: new Date().toISOString(),
       };
       // POST to json-server (adjust port if needed)
-      fetch("http://localhost:3001/battleHistory", {
+      fetch(`${API_URL}/battleHistory`,{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(battleRecord),

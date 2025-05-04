@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001';
-
+const API_URL = 'https://poke-api-ytta.onrender.com';
 export const getTeam = async () => {
   try {
     const response = await axios.get(`${API_URL}/teamPokemons`);
