@@ -32,7 +32,7 @@ const floatKeyframes = `
 `;
 
 const PokemonList = () => {
-  const [allPokemon, setAllPokemon] = useState([]);
+  const [pokemonData, setPokemonData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedPokemon, setSelectedPokemon] = useState(null);
@@ -42,9 +42,12 @@ const PokemonList = () => {
   const [search, setSearch] = useState('');
   const [type, setType] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
+  const [totalCount, setTotalCount] = useState(0);
+  const [typeOptions, setTypeOptions] = useState([]);
+  const itemsPerPage = 12;
+  const [searchTimeout, setSearchTimeout] = useState(null);
 
-  // Fetch all Pokémon (limit to 151 for demo)
+  // Initialize AOS
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -53,86 +56,164 @@ const PokemonList = () => {
       mirror: false
     });
 
-    const fetchAllPokemon = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=151');
-        const details = await Promise.all(
-          response.data.results.map(async (pokemon) => {
-            const detailResponse = await axios.get(pokemon.url);
-            return {
-              id: detailResponse.data.id,
-              name: detailResponse.data.name,
-              image: detailResponse.data.sprites.other['official-artwork'].front_default || 
-                    detailResponse.data.sprites.front_default,
-              backImage: detailResponse.data.sprites.back_default,
-              types: detailResponse.data.types.map(type => type.type.name),
-              stats: {
-                hp: detailResponse.data.stats.find(stat => stat.stat.name === 'hp').base_stat,
-                attack: detailResponse.data.stats.find(stat => stat.stat.name === 'attack').base_stat,
-                defense: detailResponse.data.stats.find(stat => stat.stat.name === 'defense').base_stat,
-                speed: detailResponse.data.stats.find(stat => stat.stat.name === 'speed').base_stat
-              },
-              height: detailResponse.data.height / 10,
-              weight: detailResponse.data.weight / 10, 
-              abilities: detailResponse.data.abilities.map(ability => ability.ability.name),
-              animatedSprite: detailResponse.data.sprites.versions?.['generation-v']?.['black-white']?.animated?.front_default
-            };
-          })
-        );
-        setAllPokemon(details);
-        setSelectedPokemon(details[0]);
-      } catch (error) {
-        setError("Failed to load Pokémon. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAllPokemon();
-
+    // Add float keyframes
     const styleElement = document.createElement('style');
     styleElement.innerHTML = floatKeyframes;
     document.head.appendChild(styleElement);
+
+    // Fetch type options once on load
+    fetchTypeOptions();
 
     return () => {
       document.head.removeChild(styleElement);
     };
   }, []);
 
-  // Build type options from allPokemon
-  const typeOptions = Array.from(
-    new Set(allPokemon.flatMap(p => p.types))
-  ).sort();
+  // Fetch all available types
+  const fetchTypeOptions = async () => {
+    try {
+      const response = await axios.get('https://pokeapi.co/api/v2/type');
+      const types = response.data.results
+        .map(type => type.name)
+        .filter(name => !['unknown', 'shadow'].includes(name))
+        .sort();
+      setTypeOptions(types);
+    } catch (error) {
+      console.error("Failed to fetch type options:", error);
+    }
+  };
 
-  // Filtered Pokémon list
-  const filteredPokemon = allPokemon.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
-    const matchesType = !type || p.types.includes(type);
-    return matchesSearch && matchesType;
-  });
+  // Fetch Pokemon with search and filter
+  useEffect(() => {
+    // Clear any existing timeout to prevent multiple rapid API calls
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
 
-  // Pagination
-  const totalPages = Math.ceil(filteredPokemon.length / itemsPerPage);
-  const paginatedPokemon = filteredPokemon.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+    // Set a small delay before searching to avoid too many API calls while typing
+    const timeout = setTimeout(() => {
+      fetchPokemon();
+    }, 500);
 
-  // Reset to first page when filter changes
+    setSearchTimeout(timeout);
+
+    return () => {
+      if (searchTimeout) clearTimeout(searchTimeout);
+    };
+  }, [search, type, currentPage]);
+
+  const fetchPokemon = async () => {
+    setLoading(true);
+    
+    try {
+      let fetchedPokemon = [];
+      
+      if (search) {
+        // Search by name
+        try {
+          const searchResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`);
+          const pokemonDetails = await fetchPokemonDetails(searchResponse.data.url || `https://pokeapi.co/api/v2/pokemon/${searchResponse.data.id}`);
+          if (pokemonDetails && (!type || pokemonDetails.types.includes(type))) {
+            fetchedPokemon = [pokemonDetails];
+          }
+          setTotalCount(fetchedPokemon.length);
+        } catch (searchError) {
+          // If direct search fails, try to get all and filter
+          const allResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=100&offset=${(currentPage - 1) * 100}`);
+          const filteredResults = allResponse.data.results.filter(
+            p => p.name.includes(search.toLowerCase())
+          );
+          
+          // Get count for pagination
+          setTotalCount(filteredResults.length);
+          
+          // Get details for current page
+          const pageResults = filteredResults.slice(0, itemsPerPage);
+          const detailPromises = pageResults.map(p => fetchPokemonDetails(p.url));
+          fetchedPokemon = await Promise.all(detailPromises);
+          
+          // Apply type filter if needed
+          if (type) {
+            fetchedPokemon = fetchedPokemon.filter(p => p.types.includes(type));
+          }
+        }
+      } else if (type) {
+        // Search by type
+        const typeResponse = await axios.get(`https://pokeapi.co/api/v2/type/${type}`);
+        const pokemonOfType = typeResponse.data.pokemon;
+        setTotalCount(pokemonOfType.length);
+        
+        // Get details for current page only
+        const offset = (currentPage - 1) * itemsPerPage;
+        const pageItems = pokemonOfType.slice(offset, offset + itemsPerPage);
+        const detailPromises = pageItems.map(p => fetchPokemonDetails(p.pokemon.url));
+        fetchedPokemon = await Promise.all(detailPromises);
+      } else {
+        // No filters - get paginated list
+        const offset = (currentPage - 1) * itemsPerPage;
+        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${itemsPerPage}&offset=${offset}`);
+        setTotalCount(response.data.count);
+        
+        const detailPromises = response.data.results.map(pokemon => 
+          fetchPokemonDetails(pokemon.url)
+        );
+        fetchedPokemon = await Promise.all(detailPromises);
+      }
+      
+      setPokemonData(fetchedPokemon.filter(Boolean));
+      
+      // Set initial selected Pokemon if none is selected
+      if (!selectedPokemon && fetchedPokemon.length > 0) {
+        setSelectedPokemon(fetchedPokemon[0]);
+      }
+      
+    } catch (error) {
+      console.error("Failed to fetch Pokémon:", error);
+      setError("Failed to load Pokémon. Please try again later.");
+      setPokemonData([]);
+    } finally {
+      setLoading(false);
+      setTimeout(() => {
+        if (AOS) AOS.refresh();
+      }, 100);
+    }
+  };
+
+  // Helper function to fetch a single Pokemon's details
+  const fetchPokemonDetails = async (url) => {
+    try {
+      const detailResponse = await axios.get(url);
+      return {
+        id: detailResponse.data.id,
+        name: detailResponse.data.name,
+        image: detailResponse.data.sprites.other['official-artwork'].front_default || 
+              detailResponse.data.sprites.front_default,
+        backImage: detailResponse.data.sprites.back_default,
+        types: detailResponse.data.types.map(type => type.type.name),
+        stats: {
+          hp: detailResponse.data.stats.find(stat => stat.stat.name === 'hp').base_stat,
+          attack: detailResponse.data.stats.find(stat => stat.stat.name === 'attack').base_stat,
+          defense: detailResponse.data.stats.find(stat => stat.stat.name === 'defense').base_stat,
+          speed: detailResponse.data.stats.find(stat => stat.stat.name === 'speed').base_stat
+        },
+        height: detailResponse.data.height / 10,
+        weight: detailResponse.data.weight / 10, 
+        abilities: detailResponse.data.abilities.map(ability => ability.ability.name),
+        animatedSprite: detailResponse.data.sprites.versions?.['generation-v']?.['black-white']?.animated?.front_default
+      };
+    } catch (error) {
+      console.error(`Failed to fetch details for a Pokémon:`, error);
+      return null;
+    }
+  };
+
+  // Calculate total pages
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  // Reset to first page when search or type filter changes
   useEffect(() => {
     setCurrentPage(1);
   }, [search, type]);
-
-  useEffect(() => {
-    if (!loading && allPokemon.length > 0) {
-      setTimeout(() => {
-        if (AOS) {
-          AOS.refresh();
-        }
-      }, 100);
-    }
-  }, [loading, allPokemon]);
 
   // Page navigation handlers
   const goToNextPage = () => {
@@ -203,7 +284,7 @@ const PokemonList = () => {
     return typeColors[type] || '#777777';
   };
 
-  if (loading) {
+  if (loading && pokemonData.length === 0) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FF5350]"></div>
@@ -211,49 +292,59 @@ const PokemonList = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="bg-red-100 p-4 rounded-lg text-red-700 text-center">
-        {error}
-      </div>
-    );
-  }
-
   return (
     <div className="mt-6">
       <h2 className="text-2xl font-bold mb-4">Pokémon Catalog</h2>
-      
 
       <div className="flex flex-col md:flex-row gap-6">
         <div className="w-full md:flex-1 lg:flex-grow">
           {/* Search and filter bar */}
-      <PokemonSearchBar
-        search={search}
-        setSearch={setSearch}
-        type={type}
-        setType={setType}
-        typeOptions={typeOptions}
-      />
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10 gap-y-20 mt-25">
-            {paginatedPokemon.map((p, index) => (
-              <PokemonCard 
-                key={p.id}
-                pokemon={p}
-                isSelected={selectedPokemon?.id === p.id}
-                onSelect={handlePokemonSelect}
-                index={index}
-                getTypeColor={getTypeColor}
-                capitalize={capitalize}
-              />
-            ))}
-          </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            goToNextPage={goToNextPage}
-            goToPrevPage={goToPrevPage}
-            goToPage={goToPage}
+          <PokemonSearchBar
+            search={search}
+            setSearch={setSearch}
+            type={type}
+            setType={setType}
+            typeOptions={typeOptions}
           />
+          
+          {error ? (
+            <div className="bg-red-100 p-4 rounded-lg text-red-700 text-center mb-6">
+              {error}
+            </div>
+          ) : loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FF5350]"></div>
+            </div>
+          ) : pokemonData.length === 0 ? (
+            <div className="text-center p-8 bg-gray-50 rounded-lg">
+              <p className="text-lg">No Pokémon found matching your search criteria.</p>
+              <p className="mt-2 text-gray-600">Try a different name or filter.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10 gap-y-20 mt-25">
+              {pokemonData.map((p, index) => (
+                <PokemonCard 
+                  key={p.id}
+                  pokemon={p}
+                  isSelected={selectedPokemon?.id === p.id}
+                  onSelect={handlePokemonSelect}
+                  index={index}
+                  getTypeColor={getTypeColor}
+                  capitalize={capitalize}
+                />
+              ))}
+            </div>
+          )}
+          
+          {!loading && pokemonData.length > 0 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              goToPage={goToPage}
+            />
+          )}
         </div>
         {selectedPokemon && (
           <div className="w-full md:w-[300px] pt-20 relative mt-10">
